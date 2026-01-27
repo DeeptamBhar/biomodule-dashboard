@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #0b1a2a;
+  color: white;
+}
+
+.panel {
+  border: 2px solid rgba(255,165,0,0.8);
+  border-radius: 12px;
+  padding: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(12, 26, 44, 0.95),
+    rgba(8, 18, 32, 0.95)
+  );
+  box-shadow:
+    0 0 10px rgba(255,165,0,0.15),
+    inset 0 0 12px rgba(0,0,0,0.6);
+}
+
+.orange {
+  color: orange;
+}
