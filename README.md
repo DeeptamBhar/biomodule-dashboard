@@ -1,3 +1,50 @@
+# Biomodule Telemetry Dashboard
+
+A real-time telemetry dashboard for a Mars Rover **biomodule system**, built with **React** and designed for competition use (ARC / URC style workflows).
+
+The dashboard visualizes:
+- Live **camera feed** from the biomodule
+- **Temperature & humidity** sensor data
+- Multiple **sampling sites (Site 1–4)**
+- Performance metrics like **FPS and stream latency**
+
+The system is designed to be **hardware-agnostic**, **ROS-optional**, and **demo-safe**.
+
+---
+
+##  Features
+
+-  **Live MJPEG video feed** from a Jetson Orin Nano
+-  **Snapshot capture** (saved locally in browser)
+-  **FPS & latency overlay** on video stream
+-  **Multi-site data panels** (Site 1–4)
+-  Modular React component architecture
+-  ROS-safe / UI-only fallback mode
+-  Camera selector (future-ready for multiple feeds)
+
+---
+
+##  Tech Stack
+
+### Frontend
+- React (Vite)
+- Vanilla CSS (dashboard-style layout)
+- Browser-native MJPEG streaming
+
+### Backend / Hardware
+- NVIDIA **Jetson Orin Nano**
+- Logitech C270 webcam
+- Python + Flask (MJPEG server)
+- OpenCV (V4L2 backend)
+
+> ROS integration is planned but not required for UI operation.
+
+---
+
+## 📐 System Architecture (High Level)
+
+
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
