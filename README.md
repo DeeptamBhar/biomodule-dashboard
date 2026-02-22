@@ -52,7 +52,7 @@ The compiled application will be generated in the `dist/` directory, ready to be
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Frontend Framework**: [React](https://react.dev/)
 - **Build Tool**: [Vite](https://vitejs.dev/)
