@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <header
-      className="cyber-panel"
+      className={`cyber-panel ${!connected ? 'system-critical' : ''}`}
       style={{
         display: "flex",
         justifyContent: "space-between",

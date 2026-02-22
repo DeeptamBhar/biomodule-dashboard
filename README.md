@@ -1,63 +1,61 @@
 # Biomodule Telemetry Dashboard
 
-A real-time telemetry dashboard for a Mars Rover **biomodule system**, built with **React** and designed for competition use (ARC / URC style workflows).
-
-The dashboard visualizes:
-- Live **camera feed** from the biomodule
-- **Temperature & humidity** sensor data
-- Multiple **sampling sites (Site 1–4)**
-- Performance metrics like **FPS and stream latency**
-
-The system is designed to be **hardware-agnostic**, **ROS-optional**, and **demo-safe**.
-
----
+A real-time telemetry dashboard for a Mars Rover **biomodule system**. This project has been redesigned into a high-fidelity **Mission Control** command center, built with **React** and **Vite**, designed for competition use (ARC / URC style workflows).
 
 ##  Features
 
--  **Live MJPEG video feed** from a Jetson Orin Nano
--  **Snapshot capture** (saved locally in browser)
--  **FPS & latency overlay** on video stream
--  **Multi-site data panels** (Site 1–4)
--  Modular React component architecture
--  ROS-safe / UI-only fallback mode
--  Camera selector (future-ready for multiple feeds)
+- **High-Fidelity UI**: Dark-mode, aerospace engineering aesthetic with glassmorphism and real-time interactive backgrounds.
+- **Dynamic Site Cards (Site 1–4)**: Live environment data tracking (Temperature, Moisture, Nitrogen) visualized with real-time scrolling SVG sparklines.
+- **Live Video Feed**: Central camera panel configured to automatically detect and stream from an attached **Logitech Webcam** via WebRTC, complete with a tactical HUD, coordinate tracking, and a thermal vision toggle.
+- **3D Rover Orientation**: A responsive 3D wireframe IMU widget simulating the rover's Pitch, Roll, and Yaw telemetry.
+- **System Diagnostics**: Scrolling status tickers and critical warning animations.
 
 ---
 
-##  Tech Stack
+##  Getting Started
 
-### Frontend
-- React (Vite)
-- Vanilla CSS (dashboard-style layout)
-- Browser-native MJPEG streaming
+This project is built with React and Vite. Follow these steps to get the dashboard running on your local machine.
 
-### Backend / Hardware
-- NVIDIA **Jetson Orin Nano**
-- Logitech C270 webcam
-- Python + Flask (MJPEG server)
-- OpenCV (V4L2 backend)
+### Prerequisites
+Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
 
-> ROS integration is planned but not required for UI operation.
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repository-url>
+   cd biomodule_dashboard
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+### Running the Development Server
+
+To start the local development server:
+```bash
+npm run dev
+```
+Open your browser and navigate to the URL provided in the terminal (usually `http://localhost:5173/`).
+
+> **Note on Camera Permissions**: When you open the dashboard, your browser will request permission to access your camera. Granting this permission is required to view the primary video feed. The application is configured to preferentially connect to a **Logitech** webcam if one is detected.
+
+### Building for Production
+
+To create an optimized production build:
+```bash
+npm run build
+```
+The compiled application will be generated in the `dist/` directory, ready to be hosted on any static web server.
 
 ---
 
-## 📐 System Architecture (High Level)
+## 🛠️ Tech Stack
 
-
-
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend Framework**: [React](https://react.dev/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: Vanilla CSS (CSS Grid, Flexbox, custom variables, keyframe animations, 3D transforms)
+- **Typography**: [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono), Share Tech Mono, Rajdhani
+- **Camera Integration**: Browser-native `navigator.mediaDevices` WebRTC API

@@ -1,14 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
 :root {
   --neon-cyan: #0ff;
   --neon-orange: #ff9d00;
   --neon-red: #ff2a2a;
-  --bg-space: #050914;
-  --bg-panel: rgba(12, 26, 44, 0.4);
-  --glass-border: rgba(0, 255, 255, 0.3);
+  --bg-space: #02040a;
+  --bg-panel: rgba(5, 12, 22, 0.65);
+  --glass-border: rgba(0, 255, 255, 0.2);
   --font-mono: 'Share Tech Mono', monospace;
   --font-display: 'Rajdhani', sans-serif;
+  --font-data: 'JetBrains Mono', monospace;
+
+  /* Mouse tracking variables */
+  --mouse-x: 50%;
+  --mouse-y: 50%;
 }
 
 * {
@@ -20,23 +25,45 @@
 body {
   margin: 0;
   background-color: var(--bg-space);
-  background-image: 
-    linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 30px 30px;
+  /* Hexagonal grid representation */
+  background-image:
+    linear-gradient(30deg, var(--bg-space) 12%, transparent 12.5%, transparent 87%, var(--bg-space) 87.5%, var(--bg-space)),
+    linear-gradient(150deg, var(--bg-space) 12%, transparent 12.5%, transparent 87%, var(--bg-space) 87.5%, var(--bg-space)),
+    linear-gradient(30deg, var(--bg-space) 12%, transparent 12.5%, transparent 87%, var(--bg-space) 87.5%, var(--bg-space)),
+    linear-gradient(150deg, var(--bg-space) 12%, transparent 12.5%, transparent 87%, var(--bg-space) 87.5%, var(--bg-space)),
+    linear-gradient(60deg, rgba(0, 255, 255, 0.03) 25%, transparent 25.5%, transparent 75%, rgba(0, 255, 255, 0.03) 75%, rgba(0, 255, 255, 0.03)),
+    linear-gradient(60deg, rgba(0, 255, 255, 0.03) 25%, transparent 25.5%, transparent 75%, rgba(0, 255, 255, 0.03) 75%, rgba(0, 255, 255, 0.03));
+  background-size: 40px 70px;
+  background-position:
+    calc(var(--mouse-x, 50%) * -0.05) calc(var(--mouse-y, 50%) * -0.05),
+    calc(var(--mouse-x, 50%) * -0.05) calc(var(--mouse-y, 50%) * -0.05),
+    calc((var(--mouse-x, 50%) * -0.05) + 20px) calc((var(--mouse-y, 50%) * -0.05) + 35px),
+    calc((var(--mouse-x, 50%) * -0.05) + 20px) calc((var(--mouse-y, 50%) * -0.05) + 35px),
+    calc(var(--mouse-x, 50%) * -0.05) calc(var(--mouse-y, 50%) * -0.05),
+    calc((var(--mouse-x, 50%) * -0.05) + 20px) calc((var(--mouse-y, 50%) * -0.05) + 35px);
   color: #fff;
   font-family: var(--font-display);
-  overflow: hidden;
+  overflow-x: hidden;
+  transition: background-position 0.1s ease-out;
 }
+
+.data-number {
+  font-family: var(--font-data);
+  font-weight: bold;
+  letter-spacing: -0.5px;
+}
+
+
 
 /* Glassmorphism Panel Base */
 .cyber-panel {
   background: var(--bg-panel);
   border: 1px solid var(--glass-border);
-  border-radius: 4px; /* Sharper corners for tactical look */
+  border-radius: 4px;
+  /* Sharper corners for tactical look */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 
+  box-shadow:
     inset 0 0 20px rgba(0, 255, 255, 0.05),
     0 4px 15px rgba(0, 0, 0, 0.5);
   position: relative;
@@ -61,12 +88,35 @@ body {
 
 /* Animations */
 @keyframes glitch-anim {
-  0% { opacity: 1; transform: translate(0); }
-  20% { opacity: 0.8; transform: translate(-2px, 1px); }
-  40% { opacity: 1; transform: translate(2px, -1px); }
-  60% { opacity: 0.9; transform: translate(-1px, 2px); }
-  80% { opacity: 1; transform: translate(1px, -2px); }
-  100% { opacity: 1; transform: translate(0); }
+  0% {
+    opacity: 1;
+    transform: translate(0);
+  }
+
+  20% {
+    opacity: 0.8;
+    transform: translate(-2px, 1px);
+  }
+
+  40% {
+    opacity: 1;
+    transform: translate(2px, -1px);
+  }
+
+  60% {
+    opacity: 0.9;
+    transform: translate(-1px, 2px);
+  }
+
+  80% {
+    opacity: 1;
+    transform: translate(1px, -2px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
 }
 
 .glitch {
@@ -76,8 +126,13 @@ body {
 }
 
 @keyframes scanline {
-  0% { top: -5%; }
-  100% { top: 105%; }
+  0% {
+    top: -5%;
+  }
+
+  100% {
+    top: 105%;
+  }
 }
 
 .tactical-scanline {
@@ -94,8 +149,13 @@ body {
 
 /* Ticker Animation */
 @keyframes ticker {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 .ticker-wrap {
@@ -120,7 +180,7 @@ body {
 
 .parallax-hover:hover {
   transform: scale(1.02) translateY(-2px);
-  box-shadow: 
+  box-shadow:
     inset 0 0 20px rgba(0, 255, 255, 0.1),
     0 8px 25px rgba(0, 255, 255, 0.2);
   border-color: rgba(0, 255, 255, 0.6);
@@ -128,8 +188,15 @@ body {
 
 /* Waveform Animation */
 @keyframes wave {
-  0%, 100% { height: 4px; }
-  50% { height: 16px; }
+
+  0%,
+  100% {
+    height: 4px;
+  }
+
+  50% {
+    height: 16px;
+  }
 }
 
 .waveform-bar {
@@ -140,8 +207,22 @@ body {
   box-shadow: 0 0 5px var(--neon-cyan);
 }
 
-.waveform-bar:nth-child(1) { animation-delay: 0.0s; }
-.waveform-bar:nth-child(2) { animation-delay: 0.2s; }
-.waveform-bar:nth-child(3) { animation-delay: 0.4s; }
-.waveform-bar:nth-child(4) { animation-delay: 0.6s; }
-.waveform-bar:nth-child(5) { animation-delay: 0.8s; }
+.waveform-bar:nth-child(1) {
+  animation-delay: 0.0s;
+}
+
+.waveform-bar:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.waveform-bar:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.waveform-bar:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.waveform-bar:nth-child(5) {
+  animation-delay: 0.8s;
+}
