@@ -36,38 +36,62 @@ export default function Footer() {
 
   return (
     <footer
-      className="panel"
+      className="cyber-panel"
       style={{
         display: "flex",
-        justifyContent: "space-between",
         alignItems: "center",
         fontSize: "0.85rem",
-        padding: "10px 16px",
-        letterSpacing: "0.5px",
+        padding: "0", /* Padding removed for ticker */
+        margin: "0 16px 16px 16px",
+        height: "40px", /* Fixed height for ticker */
+        letterSpacing: "1px",
+        fontFamily: "var(--font-mono)",
+        borderTop: "2px solid var(--neon-cyan)",
+        overflow: "hidden"
       }}
     >
-      {/* Rover status */}
-      <span style={{ opacity: 0.8 }}>
-        🛰 Rover Status:{" "}
-        <span
-          style={{
-            color: status === "ONLINE" ? "#4cff4c" : "#ff4c4c",
-            fontWeight: "bold",
-          }}
-        >
-          {status}
-        </span>
-      </span>
+      {/* Static Label Left */}
+      <div style={{
+        padding: "0 16px",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        background: "rgba(0, 255, 255, 0.15)",
+        borderRight: "1px solid var(--neon-cyan)",
+        fontWeight: "bold",
+        zIndex: 2
+      }}>
+        <span className="neon-cyan">SYS.DIAGNOSTICS //</span>
+      </div>
 
-      {/* GPS */}
-      <span>
-        GPS → Lat: <b>{lat}</b> | Lon: <b>{lon}</b>
-      </span>
+      {/* Scrolling Ticker */}
+      <div className="ticker-wrap" style={{ flex: 1, height: "100%" }}>
+        <div className="ticker-content" style={{ display: "flex", alignItems: "center", gap: "50px", height: "100%" }}>
+          <span style={{ opacity: 0.8 }}>
+            🛰 ROVER_STATUS:{" "}
+            <span
+              className={status === "ONLINE" ? "neon-cyan" : "glitch"}
+            >
+              [{status}]
+            </span>
+          </span>
 
-      {/* Telemetry */}
-      <span style={{ opacity: 0.6 }}>
-        Telemetry: {ros ? "ACTIVE" : "DISCONNECTED"}
-      </span>
+          <span>
+            GPS_COORDS &gt; LAT: <b className="neon-orange">{lat}</b> // LON: <b className="neon-orange">{lon}</b>
+          </span>
+
+          <span style={{ opacity: 0.8 }}>
+            TELEM_UPLINK: <span className={ros ? "neon-cyan" : "glitch"}>[{ros ? "ACTIVE" : "DISCONNECTED"}]</span>
+          </span>
+
+          <span style={{ opacity: 0.8 }}>
+            POWER_CORE: <span className="neon-cyan">[NOMINAL 98%]</span>
+          </span>
+          <span style={{ opacity: 0.8 }}>
+            THERMAL_REG: <span className="neon-cyan">[STABLE 22C]</span>
+          </span>
+        </div>
+      </div>
     </footer>
   );
 }

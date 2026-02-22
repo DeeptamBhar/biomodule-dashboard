@@ -1,5 +1,4 @@
 import Header from "./components/header";
-import Sidebar from "./components/sidebar";
 import VideoPanel from "./components/videoPanel";
 import Footer from "./components/footer";
 import SiteBox from "./components/sitebox";
@@ -15,9 +14,10 @@ export default function App() {
           flex: 1,
           display: "grid",
           gridTemplateColumns: "1.2fr 2fr",
-          gap: "16px",
-          padding: "16px",
+          gap: "24px",
+          padding: "24px",
           overflow: "hidden",
+          background: "radial-gradient(circle at center, rgba(0,255,255,0.05) 0%, transparent 60%)",
         }}
       >
         {/* LEFT: SITE DATA (2x2 GRID) */}

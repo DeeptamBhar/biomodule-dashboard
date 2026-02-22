@@ -1,28 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root {
+  --neon-cyan: #0ff;
+  --neon-orange: #ff9d00;
+  --neon-red: #ff2a2a;
+  --bg-space: #050914;
+  --bg-panel: rgba(12, 26, 44, 0.4);
+  --glass-border: rgba(0, 255, 255, 0.3);
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-display: 'Rajdhani', sans-serif;
+}
+
 * {
   box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   margin: 0;
-  background: #0b1a2a;
-  color: white;
+  background-color: var(--bg-space);
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  color: #fff;
+  font-family: var(--font-display);
+  overflow: hidden;
 }
 
-.panel {
-  border: 2px solid rgba(255,165,0,0.8);
-  border-radius: 12px;
-  padding: 14px;
-  background: linear-gradient(
-    180deg,
-    rgba(12, 26, 44, 0.95),
-    rgba(8, 18, 32, 0.95)
-  );
-  box-shadow:
-    0 0 10px rgba(255,165,0,0.15),
-    inset 0 0 12px rgba(0,0,0,0.6);
+/* Glassmorphism Panel Base */
+.cyber-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--glass-border);
+  border-radius: 4px; /* Sharper corners for tactical look */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 
+    inset 0 0 20px rgba(0, 255, 255, 0.05),
+    0 4px 15px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.orange {
-  color: orange;
+/* Neon Text Utilities */
+.neon-cyan {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
 }
+
+.neon-orange {
+  color: var(--neon-orange);
+  text-shadow: 0 0 5px rgba(255, 157, 0, 0.5);
+}
+
+.neon-red {
+  color: var(--neon-red);
+  text-shadow: 0 0 8px rgba(255, 42, 42, 0.8);
+}
+
+/* Animations */
+@keyframes glitch-anim {
+  0% { opacity: 1; transform: translate(0); }
+  20% { opacity: 0.8; transform: translate(-2px, 1px); }
+  40% { opacity: 1; transform: translate(2px, -1px); }
+  60% { opacity: 0.9; transform: translate(-1px, 2px); }
+  80% { opacity: 1; transform: translate(1px, -2px); }
+  100% { opacity: 1; transform: translate(0); }
+}
+
+.glitch {
+  animation: glitch-anim 0.2s infinite;
+  color: var(--neon-red);
+  font-weight: bold;
+}
+
+@keyframes scanline {
+  0% { top: -5%; }
+  100% { top: 105%; }
+}
+
+.tactical-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 255, 255, 0.4), transparent);
+  animation: scanline 4s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Ticker Animation */
+@keyframes ticker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.ticker-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-content {
+  display: inline-block;
+  animation: ticker 15s linear infinite;
+  padding-left: 100%;
+}
+
+/* Parallax Hover Effect */
+.parallax-hover {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.parallax-hover:hover {
+  transform: scale(1.02) translateY(-2px);
+  box-shadow: 
+    inset 0 0 20px rgba(0, 255, 255, 0.1),
+    0 8px 25px rgba(0, 255, 255, 0.2);
+  border-color: rgba(0, 255, 255, 0.6);
+}
+
+/* Waveform Animation */
+@keyframes wave {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
+
+.waveform-bar {
+  width: 4px;
+  background-color: var(--neon-cyan);
+  border-radius: 2px;
+  animation: wave 1s ease-in-out infinite;
+  box-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.waveform-bar:nth-child(1) { animation-delay: 0.0s; }
+.waveform-bar:nth-child(2) { animation-delay: 0.2s; }
+.waveform-bar:nth-child(3) { animation-delay: 0.4s; }
+.waveform-bar:nth-child(4) { animation-delay: 0.6s; }
+.waveform-bar:nth-child(5) { animation-delay: 0.8s; }
