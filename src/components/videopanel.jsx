@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function VideoPanel() {
+export default function VideoPanel({ addRecordingToSite }) {
   const videoRef = useRef(null);
   const rafRef = useRef(null);
 
   const [fps, setFps] = useState(0);
   const [latency, setLatency] = useState(1); // Local webcam latency is negligible
   const [isThermal, setIsThermal] = useState(false);
+
+  // Recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const [pendingRecording, setPendingRecording] = useState(null);
+  const mediaRecorderRef = useRef(null);
+  const recordedChunksRef = useRef([]);
 
   // Tactical data states
   const [targetCoords, setTargetCoords] = useState({ x: 45, y: 112 });
@@ -22,8 +28,12 @@ export default function VideoPanel() {
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = devices.filter(d => d.kind === 'videoinput');
 
-        // Try to identify logitech webcam
-        const logiCam = videoDevices.find(d => d.label.toLowerCase().includes('logitech'));
+        // Try to identify logitech webcam by specific names
+        const logiCam = videoDevices.find(d =>
+          d.label.toLowerCase().includes('logitech') ||
+          d.label.toLowerCase().includes('c270')
+        );
+
         if (logiCam) {
           console.log("Selected Logitech Camera:", logiCam.label);
           // Stop the initial generic stream
@@ -104,6 +114,38 @@ export default function VideoPanel() {
     link.click();
   };
 
+  // Video recording handler
+  const toggleRecording = () => {
+    if (isRecording) {
+      // Stop recording
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    } else {
+      // Start recording
+      const stream = videoRef.current.srcObject;
+      if (!stream) return;
+
+      recordedChunksRef.current = [];
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        setPendingRecording(url);
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorder.start();
+      setIsRecording(true);
+    }
+  };
+
   return (
     <div
       className="cyber-panel"
@@ -116,6 +158,38 @@ export default function VideoPanel() {
         backgroundColor: "#000",
       }}
     >
+      {/* Pending Recording Overlay */}
+      {pendingRecording && (
+        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.85)", zIndex: 20, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", backdropFilter: "blur(5px)" }}>
+          <h3 className="neon-cyan" style={{ marginBottom: "20px", textTransform: "uppercase", letterSpacing: "2px" }}>ASSIGN RECORDING TO SITE</h3>
+          <div style={{ display: "flex", gap: "10px", marginBottom: "30px" }}>
+            {[1, 2, 3, 4].map(num => (
+              <button
+                key={num}
+                onClick={() => {
+                  if (addRecordingToSite) addRecordingToSite(`Site ${num}`, pendingRecording);
+                  setPendingRecording(null);
+                }}
+                className="parallax-hover"
+                style={{ padding: "12px 24px", background: "rgba(0,255,255,0.1)", border: "1px solid var(--neon-cyan)", color: "var(--neon-cyan)", cursor: "pointer", fontFamily: "var(--font-mono)", fontSize: "1rem", fontWeight: "bold" }}
+              >
+                SITE {num}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: "20px" }}>
+            <button onClick={() => {
+              const link = document.createElement('a');
+              link.href = pendingRecording;
+              link.download = `recording_${Date.now()}.webm`;
+              link.click();
+              setPendingRecording(null);
+            }} className="parallax-hover" style={{ padding: "8px 16px", background: "rgba(0, 255, 255, 0.05)", border: "1px solid #aaa", color: "#aaa", cursor: "pointer", fontFamily: "var(--font-mono)" }}>SAVE TO PC ONLY</button>
+            <button onClick={() => setPendingRecording(null)} className="parallax-hover" style={{ padding: "8px 16px", background: "rgba(255, 42, 42, 0.1)", border: "1px solid var(--neon-red)", color: "var(--neon-red)", cursor: "pointer", fontFamily: "var(--font-mono)" }}>DISCARD</button>
+          </div>
+        </div>
+      )}
+
       {/* Tactical HUD Corner Brackets */}
       <div style={{ position: "absolute", top: "10px", left: "10px", width: "30px", height: "30px", borderTop: "3px solid var(--neon-cyan)", borderLeft: "3px solid var(--neon-cyan)", zIndex: 4 }}></div>
       <div style={{ position: "absolute", top: "10px", right: "10px", width: "30px", height: "30px", borderTop: "3px solid var(--neon-cyan)", borderRight: "3px solid var(--neon-cyan)", zIndex: 4 }}></div>
@@ -197,6 +271,40 @@ export default function VideoPanel() {
           THERMAL
         </button>
 
+        {/* Video Record Button */}
+        <button
+          onClick={toggleRecording}
+          className="parallax-hover"
+          style={{
+            background: isRecording ? "rgba(255, 42, 42, 0.2)" : "rgba(0, 255, 255, 0.1)",
+            color: isRecording ? "var(--neon-red)" : "var(--neon-cyan)",
+            border: `1px solid ${isRecording ? "var(--neon-red)" : "var(--neon-cyan)"}`,
+            backdropFilter: "blur(4px)",
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.85rem",
+            fontWeight: "bold",
+            padding: "8px 12px",
+            cursor: "pointer",
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            boxShadow: `0 0 10px ${isRecording ? "rgba(255, 42, 42, 0.4)" : "rgba(0, 255, 255, 0.2)"}`,
+            transition: "all 0.2s ease",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
+          }}
+        >
+          <span style={{
+            display: "inline-block",
+            width: "10px",
+            height: "10px",
+            background: isRecording ? "var(--neon-red)" : "var(--neon-cyan)",
+            borderRadius: isRecording ? "2px" : "50%",
+            animation: isRecording ? "pulse 1s infinite" : "none"
+          }}></span>
+          {isRecording ? "REC" : "REC"}
+        </button>
+
         {/* Snapshot button (Tactical Trigger) */}
         <button
           onClick={takeSnapshot}
@@ -219,7 +327,7 @@ export default function VideoPanel() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ display: "inline-block", width: "8px", height: "8px", background: "var(--neon-red)", borderRadius: "50%", animation: "glitch-anim 2s infinite" }}></span>
+            <span style={{ display: "inline-block", width: "8px", height: "8px", background: "var(--neon-red)", borderRadius: "50%" }}></span>
             CAPTURE
           </div>
         </button>
@@ -275,9 +383,7 @@ export default function VideoPanel() {
           objectFit: "cover",
           display: "block",
           transform: "scaleX(-1)", /* Mirror the webcam feed */
-          filter: isThermal
-            ? "invert(1) hue-rotate(180deg) saturate(3) contrast(1.5)"
-            : "contrast(1.2) saturate(1.1) sepia(0.2) hue-rotate(180deg)", /* Give it a technical/cyan tint normally */
+          filter: isThermal ? "invert(1) hue-rotate(180deg) saturate(3) contrast(1.5)" : "none",
           transition: "filter 0.5s ease"
         }}
       />

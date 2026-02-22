@@ -8,6 +8,21 @@ import { useState, useRef, useEffect } from "react";
 export default function App() {
   const containerRef = useRef(null);
 
+  // Storage for recorded video blobs assigned to sites
+  const [recordings, setRecordings] = useState({
+    "Site 1": [],
+    "Site 2": [],
+    "Site 3": [],
+    "Site 4": []
+  });
+
+  const addRecordingToSite = (siteId, videoUrl) => {
+    setRecordings(prev => ({
+      ...prev,
+      [siteId]: [...prev[siteId], videoUrl]
+    }));
+  };
+
   const handleMouseMove = (e) => {
     if (!containerRef.current) return;
     const { clientX, clientY } = e;
@@ -51,6 +66,7 @@ export default function App() {
           <SiteBox
             title="Site 1"
             videoUrl="http://192.168.0.121:8080/video"
+            recordings={recordings["Site 1"]}
             data={{
               Temperature: "27.5 °C",
               Moisture: "35 %",
@@ -60,6 +76,7 @@ export default function App() {
           <SiteBox
             title="Site 2"
             videoUrl="http://192.168.0.121:8080/video"
+            recordings={recordings["Site 2"]}
             data={{
               Temperature: "28.1 °C",
               Moisture: "33 %",
@@ -69,6 +86,7 @@ export default function App() {
           <SiteBox
             title="Site 3"
             videoUrl="http://192.168.0.121:8080/video"
+            recordings={recordings["Site 3"]}
             data={{
               Temperature: "26.9 °C",
               Moisture: "38 %",
@@ -78,6 +96,7 @@ export default function App() {
           <SiteBox
             title="Site 4"
             videoUrl="http://192.168.0.121:8080/video"
+            recordings={recordings["Site 4"]}
             data={{
               Temperature: "27.8 °C",
               Moisture: "36 %",
@@ -96,7 +115,7 @@ export default function App() {
           }}
         >
           <div style={{ width: "100%", height: "500px", minHeight: "50vh" }}>
-            <VideoPanel />
+            <VideoPanel addRecordingToSite={addRecordingToSite} />
           </div>
           <div style={{ width: "100%", height: "300px", minHeight: "30vh" }}>
             <ImuWidget />

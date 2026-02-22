@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 
-export default function SiteBox({ title, videoUrl, data }) {
+export default function SiteBox({ title, videoUrl, data, recordings }) {
   // State to hold sparkline data points (e.g., 20 points)
   const [history, setHistory] = useState(Array(20).fill(50));
+  const [activeVideo, setActiveVideo] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,10 +36,37 @@ export default function SiteBox({ title, videoUrl, data }) {
         overflow: "hidden",
         fontSize: "0.9rem",
         lineHeight: "1.8",
+        padding: "0" // Remove padding from the main wrapper so video anchors to top
       }}
     >
-      {/* Subtle Video Background Layer */}
-      {videoUrl && (
+      {/* Active Video Playback Mode (Opaque, Unfiltered, Block level) */}
+      {activeVideo && (
+        <div style={{
+          position: "relative",
+          width: "100%",
+          height: "140px", /* Fixed height for the video player at the top */
+          backgroundColor: "#000",
+          zIndex: 5
+        }}>
+          <video
+            src={activeVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transform: "scaleX(-1)", /* Mirror to match original recording feed */
+              borderBottom: "1px solid rgba(0,255,255,0.3)"
+            }}
+          />
+        </div>
+      )}
+
+      {/* Subtle Live Video Background Layer (Aesthetic Mode) */}
+      {!activeVideo && videoUrl && (
         <div style={{
           position: "absolute",
           top: 0,
@@ -58,7 +86,7 @@ export default function SiteBox({ title, videoUrl, data }) {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              filter: "sepia(1) hue-rotate(180deg) saturate(2) brightness(0.8) contrast(1.2)" /* Tactical cyan tint */
+              filter: "sepia(1) hue-rotate(180deg) saturate(2) brightness(0.8) contrast(1.2)"
             }}
           />
           {/* Scanline overlay for aesthetic */}
@@ -71,7 +99,7 @@ export default function SiteBox({ title, videoUrl, data }) {
         position: "relative",
         zIndex: 1,
         padding: "16px",
-        height: "100%",
+        height: activeVideo ? "calc(100% - 140px)" : "100%", // Adjust height based on video presence
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -101,17 +129,64 @@ export default function SiteBox({ title, videoUrl, data }) {
             const numberMatch = value.match(/[\d.]+/);
             const unitMatch = value.replace(/[\d.]+/g, '').trim();
 
+            // When active video is playing, condense the padding to fit the new layout
+            const paddingBottom = activeVideo ? "2px" : "4px";
+
             return (
-              <div key={key} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(0, 255, 255, 0.1)", paddingBottom: "4px" }}>
-                <span style={{ color: "rgba(255,255,255,0.6)", textTransform: "uppercase", fontSize: "0.8rem", letterSpacing: "1px" }}>{key}</span>
+              <div key={key} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(0, 255, 255, 0.1)", paddingBottom: paddingBottom }}>
+                <span style={{ color: "rgba(255,255,255,0.6)", textTransform: "uppercase", fontSize: activeVideo ? "0.7rem" : "0.8rem", letterSpacing: "1px" }}>{key}</span>
                 <span>
-                  <span className="data-number neon-cyan" style={{ fontSize: "1.05rem" }}>{numberMatch ? numberMatch[0] : value}</span>
+                  <span className="data-number neon-cyan" style={{ fontSize: activeVideo ? "0.9rem" : "1.05rem" }}>{numberMatch ? numberMatch[0] : value}</span>
                   {numberMatch && <span style={{ marginLeft: "4px", fontSize: "0.75rem", color: "var(--neon-orange)" }}>{unitMatch}</span>}
                 </span>
               </div>
             );
           })}
         </div>
+
+        {/* Recordings Archive */}
+        {recordings && recordings.length > 0 && (
+          <div style={{ marginTop: "10px", borderTop: "1px solid rgba(0,255,255,0.2)", paddingTop: "8px", zIndex: 10, position: "relative" }}>
+            <span style={{ fontSize: "0.7rem", color: "var(--neon-cyan)", textTransform: "uppercase", letterSpacing: "1px" }}>ARCHIVES ({recordings.length})</span>
+            <div style={{ display: "flex", gap: "6px", marginTop: "6px", flexWrap: "wrap" }}>
+              {recordings.map((rec, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveVideo(rec)}
+                  style={{
+                    background: activeVideo === rec ? "rgba(0,255,255,0.3)" : "rgba(0,0,0,0.5)",
+                    border: "1px solid var(--neon-cyan)",
+                    color: "white",
+                    fontSize: "0.75rem",
+                    padding: "2px 8px",
+                    cursor: "pointer",
+                    fontFamily: "var(--font-mono)",
+                    transition: "background 0.2s"
+                  }}
+                >
+                  CLIP #{idx + 1}
+                </button>
+              ))}
+              {activeVideo && (
+                <button
+                  onClick={() => setActiveVideo(null)}
+                  style={{
+                    background: "rgba(255,42,42,0.2)",
+                    border: "1px solid var(--neon-red)",
+                    color: "white",
+                    fontSize: "0.75rem",
+                    padding: "2px 8px",
+                    cursor: "pointer",
+                    fontFamily: "var(--font-mono)",
+                    marginLeft: "auto"
+                  }}
+                >
+                  LIVE VIEW
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
